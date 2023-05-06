@@ -59,7 +59,7 @@ class DefaultTokenProcedureClientCredentialsTokenProcedureTest {
     }
 
     @Test
-    @DisplayName("Should not generate an access token when exception is exception is thrown")
+    @DisplayName("Should not generate an access token when exception is thrown")
     void testException() throws TokenIssuerException {
         // given
         var context = mock(ClientCredentialsTokenProcedurePluginContext.class);
