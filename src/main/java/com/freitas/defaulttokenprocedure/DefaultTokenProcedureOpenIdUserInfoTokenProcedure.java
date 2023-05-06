@@ -9,7 +9,6 @@ public final class DefaultTokenProcedureOpenIdUserInfoTokenProcedure implements 
     @Override
     public ResponseModel run(OpenIdUserInfoTokenProcedurePluginContext context) {
         var responseData = context.getDefaultResponseData().asMap();
-
         var name = context.getAccountAttributes().getName();
         if (name != null) {
             var formattedName = name.getFormatted();
@@ -19,7 +18,6 @@ public final class DefaultTokenProcedureOpenIdUserInfoTokenProcedure implements 
         }
 
         var presentedTokenData = context.getPresentedToken().getTokenData();
-
         responseData.put("scope", presentedTokenData.getMandatoryValue("scope", String.class));
 
         var delegation = context.getPresentedToken().getTokenDelegation();

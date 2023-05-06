@@ -14,11 +14,10 @@ public final class DefaultTokenProcedureRopcTokenProcedure implements RopcTokenP
     public ResponseModel run(RopcTokenProcedurePluginContext context) {
         var delegationData = context.getDefaultDelegationData();
         var issuedDelegation = context.getDelegationIssuer().issue(delegationData);
-
         var accessTokenData = context.getDefaultAccessTokenData();
+
         try {
             var issuedAccessToken = context.getAccessTokenIssuer().issue(accessTokenData, issuedDelegation);
-
             var refreshTokenData = context.getDefaultRefreshTokenData();
             var issuedRefreshToken = context.getRefreshTokenIssuer().issue(refreshTokenData, issuedDelegation);
 

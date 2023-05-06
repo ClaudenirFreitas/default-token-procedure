@@ -8,14 +8,12 @@ import se.curity.identityserver.sdk.web.ResponseModel;
 
 import java.util.HashMap;
 
-
 public final class DefaultTokenProcedureIntrospectionApplicationJwtTokenProcedure implements IntrospectionApplicationJwtTokenProcedure {
 
     @Override
     public ResponseModel run(IntrospectionTokenProcedurePluginContext context) {
         var responseData = new HashMap<String, Object>(2);
         var defaultAtJwtIssuer = context.getDefaultAccessTokenJwtIssuer();
-
         var delegation = context.getDelegation();
 
         try {

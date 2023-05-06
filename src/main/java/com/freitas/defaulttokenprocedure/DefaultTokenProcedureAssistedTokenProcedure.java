@@ -1,6 +1,5 @@
 package com.freitas.defaulttokenprocedure;
 
-import com.freitas.defaulttokenprocedure.config.DefaultTokenProcedureTokenProcedureConfig;
 import se.curity.identityserver.sdk.data.tokens.TokenIssuerException;
 import se.curity.identityserver.sdk.procedure.token.AssistedTokenProcedure;
 import se.curity.identityserver.sdk.procedure.token.context.AssistedTokenProcedurePluginContext;
@@ -9,21 +8,12 @@ import se.curity.identityserver.sdk.web.ResponseModel;
 import java.time.Instant;
 import java.util.HashMap;
 
-public final class DefaultTokenProcedureAssistedTokenProcedure implements AssistedTokenProcedure
-{
-    private final DefaultTokenProcedureTokenProcedureConfig _configuration;
-
-    public DefaultTokenProcedureAssistedTokenProcedure(DefaultTokenProcedureTokenProcedureConfig configuration)
-    {
-        _configuration = configuration;
-    }
+public final class DefaultTokenProcedureAssistedTokenProcedure implements AssistedTokenProcedure {
 
     @Override
-    public ResponseModel run(AssistedTokenProcedurePluginContext context)
-    {
+    public ResponseModel run(AssistedTokenProcedurePluginContext context) {
         var issuedToken = context.getIssuedToken();
-        if (issuedToken != null)
-        {
+        if (issuedToken != null) {
             var responseData = new HashMap<String, Object>(5);
             responseData.put("status", "success");
             responseData.put("access_token", issuedToken.getValue());
@@ -37,11 +27,9 @@ public final class DefaultTokenProcedureAssistedTokenProcedure implements Assist
         var delegationData = context.getDefaultDelegationData();
         var issuedDelegation = context.getDelegationIssuer().issue(delegationData);
 
-        var accessTokenData = context.getDefaultAccessTokenData();
-        try
-        {
+        try {
+            var accessTokenData = context.getDefaultAccessTokenData();
             var issuedAccessToken = context.getAccessTokenIssuer().issue(accessTokenData, issuedDelegation);
-
             var responseData = new HashMap<String, Object>(5);
             responseData.put("status", "success");
             responseData.put("access_token", issuedAccessToken);
@@ -50,10 +38,9 @@ public final class DefaultTokenProcedureAssistedTokenProcedure implements Assist
             responseData.put("subject", context.subjectAttributes().getSubject());
 
             return ResponseModel.mapResponseModel(responseData);
-        }
-        catch (TokenIssuerException e)
-        {
+        } catch (TokenIssuerException e) {
             return ResponseModel.problemResponseModel("token_issuer_exception", "Could not issue new tokens");
         }
     }
+
 }

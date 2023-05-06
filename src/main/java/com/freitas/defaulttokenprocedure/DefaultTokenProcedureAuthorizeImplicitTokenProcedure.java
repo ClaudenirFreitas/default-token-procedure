@@ -1,6 +1,5 @@
 package com.freitas.defaulttokenprocedure;
 
-import com.freitas.defaulttokenprocedure.config.DefaultTokenProcedureTokenProcedureConfig;
 import se.curity.identityserver.sdk.attribute.Attribute;
 import se.curity.identityserver.sdk.data.authorization.Delegation;
 import se.curity.identityserver.sdk.data.tokens.TokenIssuerException;
@@ -13,18 +12,10 @@ import java.time.Instant;
 import java.util.HashMap;
 
 
-public final class DefaultTokenProcedureAuthorizeImplicitTokenProcedure implements AuthorizeImplicitTokenProcedure
-{
-    private final DefaultTokenProcedureTokenProcedureConfig _configuration;
-
-    public DefaultTokenProcedureAuthorizeImplicitTokenProcedure(DefaultTokenProcedureTokenProcedureConfig configuration)
-    {
-        _configuration = configuration;
-    }
+public final class DefaultTokenProcedureAuthorizeImplicitTokenProcedure implements AuthorizeImplicitTokenProcedure {
 
     @Override
-    public ResponseModel run(AuthorizeTokenProcedurePluginContext context)
-    {
+    public ResponseModel run(AuthorizeTokenProcedurePluginContext context) {
         var responseData = new HashMap<String, Object>(8);
         responseData.put("state", context.getProvidedState());
         responseData.put("iss", context.getIssuer());
@@ -32,14 +23,11 @@ public final class DefaultTokenProcedureAuthorizeImplicitTokenProcedure implemen
         String issuedAccessToken = null;
         Delegation issuedDelegation = null;
 
-        try
-        {
+        try {
             var accessTokenData = context.getDefaultAccessTokenData();
-            if (accessTokenData != null)
-            {
+            if (accessTokenData != null) {
                 var delegationData = context.getDefaultDelegationData();
                 issuedDelegation = context.getDelegationIssuer().issue(delegationData);
-
                 issuedAccessToken = context.getAccessTokenIssuer().issue(accessTokenData, issuedDelegation);
 
                 responseData.put("access_token", issuedAccessToken);
@@ -49,10 +37,8 @@ public final class DefaultTokenProcedureAuthorizeImplicitTokenProcedure implemen
             }
 
             var idTokenData = context.getDefaultIdTokenData();
-            if (idTokenData != null)
-            {
-                if (issuedDelegation == null)
-                {
+            if (idTokenData != null) {
+                if (issuedDelegation == null) {
                     var delegationData = context.getDefaultDelegationData();
                     issuedDelegation = context.getDelegationIssuer().issue(delegationData);
                 }
@@ -63,17 +49,14 @@ public final class DefaultTokenProcedureAuthorizeImplicitTokenProcedure implemen
                 responseData.put("id_token", idTokenIssuer.issue(idTokenData, issuedDelegation));
             }
 
-            if (context.getScopeNames().contains("openid") && context instanceof OpenIdConnectAuthorizeTokenProcedurePluginContext)
-            {
-                responseData.put("session_state",((OpenIdConnectAuthorizeTokenProcedurePluginContext) context).getSessionState());
+            if (context.getScopeNames().contains("openid") && context instanceof OpenIdConnectAuthorizeTokenProcedurePluginContext openIdContext) {
+                responseData.put("session_state", openIdContext.getSessionState());
             }
 
             return ResponseModel.mapResponseModel(responseData);
-        }
-        catch (TokenIssuerException e)
-        {
+        } catch (TokenIssuerException e) {
             return ResponseModel.problemResponseModel("token_issuer_exception", "Could not issue new tokens");
         }
-
     }
+
 }

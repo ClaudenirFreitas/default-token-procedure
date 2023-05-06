@@ -15,11 +15,10 @@ public final class DefaultTokenProcedureDeviceCodeTokenProcedure implements Devi
     public ResponseModel run(DeviceCodeTokenProcedurePluginContext context) {
         var delegationData = context.getDefaultDelegationData();
         var issuedDelegation = context.getDelegationIssuer().issue(delegationData);
-
         var accessTokenData = context.getDefaultAccessTokenData();
+
         try {
             var issuedAccessToken = context.getAccessTokenIssuer().issue(accessTokenData, issuedDelegation);
-
             var refreshTokenData = context.getDefaultRefreshTokenData();
             var issuedRefreshToken = context.getRefreshTokenIssuer().issue(refreshTokenData, issuedDelegation);
 
@@ -32,10 +31,8 @@ public final class DefaultTokenProcedureDeviceCodeTokenProcedure implements Devi
 
             if (context.getScopeNames().contains("openid")) {
                 var idTokenData = context.getDefaultIdTokenData();
-
                 var idTokenIssuer = context.getIdTokenIssuer();
                 idTokenData.with(Attribute.of("at_hash", idTokenIssuer.atHash(issuedAccessToken)));
-
                 responseData.put("id_token", idTokenIssuer.issue(idTokenData, issuedDelegation));
             }
 

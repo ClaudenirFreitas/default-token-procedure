@@ -31,9 +31,7 @@ public final class DefaultTokenProcedureOpenIdAuthorizeEndpointHybridTokenProced
             if (accessTokenData != null) {
                 var delegationData = context.getDefaultDelegationData();
                 issuedDelegation = context.getDelegationIssuer().issue(delegationData);
-
                 issuedAccessToken = context.getAccessTokenIssuer().issue(accessTokenData, issuedDelegation);
-
                 responseData.put("access_token", issuedAccessToken);
                 responseData.put("token_type", "bearer");
                 responseData.put("scope", accessTokenData.getScope());
@@ -51,7 +49,6 @@ public final class DefaultTokenProcedureOpenIdAuthorizeEndpointHybridTokenProced
                 idTokenHashClaims.add(Attribute.of("c_hash", idTokenIssuer.cHash(issuedAuthorizationCode)));
                 idTokenHashClaims.add(Attribute.of("at_hash", idTokenIssuer.atHash(issuedAccessToken)));
                 idTokenData = IdTokenAttributes.of(idTokenData.with(idTokenHashClaims));
-
                 responseData.put("id_token", idTokenIssuer.issue(idTokenData, issuedDelegation));
             }
 

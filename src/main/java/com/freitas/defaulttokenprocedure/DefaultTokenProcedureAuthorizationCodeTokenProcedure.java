@@ -1,6 +1,5 @@
 package com.freitas.defaulttokenprocedure;
 
-import com.freitas.defaulttokenprocedure.config.DefaultTokenProcedureTokenProcedureConfig;
 import se.curity.identityserver.sdk.attribute.Attribute;
 import se.curity.identityserver.sdk.data.tokens.TokenIssuerException;
 import se.curity.identityserver.sdk.procedure.token.AuthorizationCodeTokenProcedure;
@@ -10,27 +9,16 @@ import se.curity.identityserver.sdk.web.ResponseModel;
 import java.time.Instant;
 import java.util.HashMap;
 
-public final class DefaultTokenProcedureAuthorizationCodeTokenProcedure implements AuthorizationCodeTokenProcedure
-{
-    private final DefaultTokenProcedureTokenProcedureConfig _configuration;
-
-    public DefaultTokenProcedureAuthorizationCodeTokenProcedure(DefaultTokenProcedureTokenProcedureConfig configuration)
-    {
-        _configuration = configuration;
-    }
+public final class DefaultTokenProcedureAuthorizationCodeTokenProcedure implements AuthorizationCodeTokenProcedure {
 
     @Override
-    public ResponseModel run(AuthorizationCodeTokenProcedurePluginContext context)
-    {
+    public ResponseModel run(AuthorizationCodeTokenProcedurePluginContext context) {
         var delegationData = context.getDefaultDelegationData();
         var issuedDelegation = context.getDelegationIssuer().issue(delegationData);
-
         var accessTokenData = context.getDefaultAccessTokenData();
 
-        try
-        {
+        try {
             var issuedAccessToken = context.getAccessTokenIssuer().issue(accessTokenData, issuedDelegation);
-
             var refreshTokenData = context.getDefaultRefreshTokenData();
             var issuedRefreshToken = context.getRefreshTokenIssuer().issue(refreshTokenData, issuedDelegation);
 
@@ -42,19 +30,16 @@ public final class DefaultTokenProcedureAuthorizationCodeTokenProcedure implemen
             responseData.put("expires_in", accessTokenData.getExpires().getEpochSecond() - Instant.now().getEpochSecond());
 
             var idTokenData = context.getDefaultIdTokenData();
-            if (idTokenData != null)
-            {
+            if (idTokenData != null) {
                 var idTokenIssuer = context.getIdTokenIssuer();
                 idTokenData.with(Attribute.of("at_hash", idTokenIssuer.atHash(issuedAccessToken)));
-
                 responseData.put("id_token", idTokenIssuer.issue(idTokenData, issuedDelegation));
             }
-
             return ResponseModel.mapResponseModel(responseData);
-        }
-        catch (TokenIssuerException e)
-        {
-           return ResponseModel.problemResponseModel("token_issuer_exception", "Could not issue new tokens");
+        } catch (TokenIssuerException e) {
+            return ResponseModel.problemResponseModel("token_issuer_exception", "Could not issue new tokens");
         }
     }
+
 }
+

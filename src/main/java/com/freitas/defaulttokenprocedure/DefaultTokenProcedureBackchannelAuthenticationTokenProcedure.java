@@ -1,6 +1,5 @@
 package com.freitas.defaulttokenprocedure;
 
-import com.freitas.defaulttokenprocedure.config.DefaultTokenProcedureTokenProcedureConfig;
 import se.curity.identityserver.sdk.attribute.Attribute;
 import se.curity.identityserver.sdk.data.tokens.TokenIssuerException;
 import se.curity.identityserver.sdk.procedure.token.BackchannelAuthenticationTokenProcedure;
@@ -10,31 +9,20 @@ import se.curity.identityserver.sdk.web.ResponseModel;
 import java.time.Instant;
 import java.util.HashMap;
 
-public final class DefaultTokenProcedureBackchannelAuthenticationTokenProcedure implements BackchannelAuthenticationTokenProcedure
-{
-    private final DefaultTokenProcedureTokenProcedureConfig _configuration;
-
-    public DefaultTokenProcedureBackchannelAuthenticationTokenProcedure(DefaultTokenProcedureTokenProcedureConfig configuration)
-    {
-        _configuration = configuration;
-    }
+public final class DefaultTokenProcedureBackchannelAuthenticationTokenProcedure implements BackchannelAuthenticationTokenProcedure {
 
     @Override
-    public ResponseModel run(BackchannelAuthenticationTokenProcedurePluginContext context)
-    {
+    public ResponseModel run(BackchannelAuthenticationTokenProcedurePluginContext context) {
         var delegationData = context.getDefaultDelegationData();
         var issuedDelegation = context.getDelegationIssuer().issue(delegationData);
-
         var accessTokenData = context.getDefaultAccessTokenData();
-        try
-        {
-            var issuedAccessToken = context.getAccessTokenIssuer().issue(accessTokenData, issuedDelegation);
 
+        try {
+            var issuedAccessToken = context.getAccessTokenIssuer().issue(accessTokenData, issuedDelegation);
             var refreshTokenData = context.getDefaultRefreshTokenData();
             var issuedRefreshToken = context.getRefreshTokenIssuer().issue(refreshTokenData, issuedDelegation);
 
             var responseData = new HashMap<String, Object>(6);
-
             responseData.put("access_token", issuedAccessToken);
             responseData.put("scope", accessTokenData.getScope());
             responseData.put("refresh_token", issuedRefreshToken);
@@ -44,14 +32,12 @@ public final class DefaultTokenProcedureBackchannelAuthenticationTokenProcedure 
             var idTokenData = context.getDefaultIdTokenData();
             var idTokenIssuer = context.getIdTokenIssuer();
             idTokenData.with(Attribute.of("at_hash", idTokenIssuer.atHash(issuedAccessToken)));
-
             responseData.put("id_token", idTokenIssuer.issue(idTokenData, issuedDelegation));
 
             return ResponseModel.mapResponseModel(responseData);
-        }
-        catch (TokenIssuerException e)
-        {
-           return ResponseModel.problemResponseModel("token_issuer_exception", "Could not issue new tokens");
+        } catch (TokenIssuerException e) {
+            return ResponseModel.problemResponseModel("token_issuer_exception", "Could not issue new tokens");
         }
     }
+
 }

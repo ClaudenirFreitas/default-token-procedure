@@ -14,7 +14,7 @@ public final class DefaultTokenProcedureRefreshTokenProcedure implements Refresh
     public ResponseModel run(RefreshTokenProcedurePluginContext pluginContext) {
         var accessTokenData = pluginContext.getDefaultAccessTokenData(pluginContext.getDelegation());
         try {
-            String issuedAccessToken = pluginContext.getAccessTokenIssuer().issue(accessTokenData, pluginContext.getDelegation());
+            var issuedAccessToken = pluginContext.getAccessTokenIssuer().issue(accessTokenData, pluginContext.getDelegation());
             var refreshToken = pluginContext.getPresentedToken().getValue();
 
             if (refreshToken == null) {
