@@ -12,8 +12,7 @@ import se.curity.identityserver.sdk.service.issuer.DelegationIssuer;
 
 import java.time.Instant;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -49,12 +48,14 @@ class DefaultTokenProcedureClientCredentialsTokenProcedureTest {
         var output = procedure.run(context);
 
         // then
-        assertNotNull(output);
-        assertEquals(4, output.getViewData().size());
-        assertEquals("admin_read", output.getViewData().get("scope"));
-        assertEquals("valid-access-token", output.getViewData().get("access_token"));
-        assertEquals("bearer", output.getViewData().get("token_type"));
-        assertEquals(300L, (Long) output.getViewData().get("expires_in"), 2);
+        assertAll(
+                () -> assertNotNull(output),
+                () -> assertEquals(4, output.getViewData().size()),
+                () -> assertEquals("admin_read", output.getViewData().get("scope")),
+                () -> assertEquals("valid-access-token", output.getViewData().get("access_token")),
+                () -> assertEquals("bearer", output.getViewData().get("token_type")),
+                () -> assertEquals(300L, (Long) output.getViewData().get("expires_in"), 2)
+        );
     }
 
     @Test
@@ -79,10 +80,12 @@ class DefaultTokenProcedureClientCredentialsTokenProcedureTest {
         var output = procedure.run(context);
 
         // then
-        assertNotNull(output);
-        assertEquals(2, output.getViewData().size());
-        assertEquals("token_issuer_exception", output.getViewData().get("_problemType"));
-        assertEquals("Could not issue new tokens", output.getViewData().get("_problemTitle"));
+        assertAll(
+                () -> assertNotNull(output),
+                () -> assertEquals(2, output.getViewData().size()),
+                () -> assertEquals("token_issuer_exception", output.getViewData().get("_problemType")),
+                () -> assertEquals("Could not issue new tokens", output.getViewData().get("_problemTitle"))
+        );
     }
 
 }
