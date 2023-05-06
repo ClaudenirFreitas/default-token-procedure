@@ -1,5 +1,6 @@
-package com.freitas.defaulttokenprocedure;
+package com.freitas.defaulttokenprocedure.descriptor;
 
+import com.freitas.defaulttokenprocedure.*;
 import com.freitas.defaulttokenprocedure.config.DefaultTokenProcedureTokenProcedureConfig;
 import se.curity.identityserver.sdk.plugin.descriptor.TokenProcedurePluginDescriptor;
 import se.curity.identityserver.sdk.procedure.token.*;
