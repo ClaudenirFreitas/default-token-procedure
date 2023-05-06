@@ -148,6 +148,7 @@ fabric.properties
 # File-based project format
 
 # IntelliJ
+default-token-procedure.iml
 
 # mpeltonen/sbt-idea plugin
 
