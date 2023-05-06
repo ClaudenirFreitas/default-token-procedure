@@ -12,9 +12,10 @@ public final class DefaultTokenProcedureTokenExchangeTokenProcedure implements T
 
     @Override
     public ResponseModel run(TokenExchangeTokenProcedurePluginContext context) {
-        var accessTokenData = context.getDefaultAccessTokenData(context.getDelegation());
         try {
-            var issuedAccessToken = context.getAccessTokenIssuer().issue(accessTokenData, context.getDelegation());
+            var delegation = context.getDelegation();
+            var accessTokenData = context.getDefaultAccessTokenData(delegation);
+            var issuedAccessToken = context.getAccessTokenIssuer().issue(accessTokenData, delegation);
 
             var responseData = new HashMap<String, Object>(4);
             responseData.put("scope", accessTokenData.getScope());
