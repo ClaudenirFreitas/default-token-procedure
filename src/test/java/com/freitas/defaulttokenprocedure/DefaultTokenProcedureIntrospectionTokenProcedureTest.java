@@ -10,8 +10,7 @@ import se.curity.identityserver.sdk.procedure.token.context.PresentedIntrospecte
 import java.util.Collections;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -36,9 +35,11 @@ class DefaultTokenProcedureIntrospectionTokenProcedureTest {
         var output = procedure.run(context);
 
         // then
-        assertNotNull(output);
-        assertEquals(1, output.getViewData().size());
-        assertEquals(false, output.getViewData().get("active"));
+        assertAll(
+                () -> assertNotNull(output),
+                () -> assertEquals(1, output.getViewData().size()),
+                () -> assertEquals(false, output.getViewData().get("active"))
+        );
     }
 
     @Test
@@ -62,12 +63,14 @@ class DefaultTokenProcedureIntrospectionTokenProcedureTest {
         var output = procedure.run(context);
 
         // then
-        assertNotNull(output);
-        assertEquals(4, output.getViewData().size());
-        assertEquals(true, output.getViewData().get("active"));
-        assertEquals("bearer", output.getViewData().get("token_type"));
-        assertEquals("test-client", output.getViewData().get("client_id"));
-        assertEquals(List.of("openid"), output.getViewData().get("expired_scope"));
+        assertAll(
+                () -> assertNotNull(output),
+                () -> assertEquals(4, output.getViewData().size()),
+                () -> assertEquals(true, output.getViewData().get("active")),
+                () -> assertEquals("bearer", output.getViewData().get("token_type")),
+                () -> assertEquals("test-client", output.getViewData().get("client_id")),
+                () -> assertEquals(List.of("openid"), output.getViewData().get("expired_scope"))
+        );
     }
 
 }
