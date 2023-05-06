@@ -59,7 +59,7 @@ class DefaultTokenProcedureClientCredentialsTokenProcedureTest {
     }
 
     @Test
-    @DisplayName("Should not generate an access token when exception is threw")
+    @DisplayName("Should not generate an access token when exception is thrown")
     void testException() throws TokenIssuerException {
         // given
         var context = mock(ClientCredentialsTokenProcedurePluginContext.class);
@@ -74,7 +74,7 @@ class DefaultTokenProcedureClientCredentialsTokenProcedureTest {
         when(delegationIssuer.issue(delegationAttributes)).thenReturn(delegation);
         when(context.getDefaultAccessTokenData()).thenReturn(accessTokenData);
         when(context.getAccessTokenIssuer()).thenReturn(accessTokenIssuer);
-        when(accessTokenIssuer.issue(accessTokenData, delegation)).thenThrow(new TokenIssuerException("Unexpected exception"));
+        when(accessTokenIssuer.issue(accessTokenData, delegation)).thenThrow(new TokenIssuerException("Invalid state."));
 
         // when
         var output = procedure.run(context);
