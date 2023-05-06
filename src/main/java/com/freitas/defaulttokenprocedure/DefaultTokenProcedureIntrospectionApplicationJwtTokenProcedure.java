@@ -12,13 +12,15 @@ public final class DefaultTokenProcedureIntrospectionApplicationJwtTokenProcedur
 
     @Override
     public ResponseModel run(IntrospectionTokenProcedurePluginContext context) {
-        var responseData = new HashMap<String, Object>(2);
         var defaultAtJwtIssuer = context.getDefaultAccessTokenJwtIssuer();
         var delegation = context.getDelegation();
 
         try {
+            var responseData = new HashMap<String, Object>(2);
             if (defaultAtJwtIssuer != null && context.getPresentedToken().isActive() && delegation != null) {
-                responseData.put("jwt", defaultAtJwtIssuer.issue(AccessTokenAttributes.of(context.getPresentedToken().getTokenData()), delegation));
+                var accessTokenAttributes = AccessTokenAttributes.of(context.getPresentedToken().getTokenData());
+                var jwt = defaultAtJwtIssuer.issue(accessTokenAttributes, delegation);
+                responseData.put("jwt", jwt);
                 responseData.put("active", true);
             }
 
