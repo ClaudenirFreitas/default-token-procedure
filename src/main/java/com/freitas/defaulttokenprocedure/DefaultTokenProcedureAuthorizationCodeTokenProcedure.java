@@ -13,11 +13,10 @@ public final class DefaultTokenProcedureAuthorizationCodeTokenProcedure implemen
 
     @Override
     public ResponseModel run(AuthorizationCodeTokenProcedurePluginContext context) {
-        var delegationData = context.getDefaultDelegationData();
-        var issuedDelegation = context.getDelegationIssuer().issue(delegationData);
-        var accessTokenData = context.getDefaultAccessTokenData();
-
         try {
+            var delegationData = context.getDefaultDelegationData();
+            var issuedDelegation = context.getDelegationIssuer().issue(delegationData);
+            var accessTokenData = context.getDefaultAccessTokenData();
             var issuedAccessToken = context.getAccessTokenIssuer().issue(accessTokenData, issuedDelegation);
             var refreshTokenData = context.getDefaultRefreshTokenData();
             var issuedRefreshToken = context.getRefreshTokenIssuer().issue(refreshTokenData, issuedDelegation);
@@ -32,8 +31,10 @@ public final class DefaultTokenProcedureAuthorizationCodeTokenProcedure implemen
             var idTokenData = context.getDefaultIdTokenData();
             if (idTokenData != null) {
                 var idTokenIssuer = context.getIdTokenIssuer();
-                idTokenData.with(Attribute.of("at_hash", idTokenIssuer.atHash(issuedAccessToken)));
-                responseData.put("id_token", idTokenIssuer.issue(idTokenData, issuedDelegation));
+                var atHash = idTokenIssuer.atHash(issuedAccessToken);
+                var idToken = idTokenIssuer.issue(idTokenData, issuedDelegation);
+                idTokenData.with(Attribute.of("at_hash", atHash));
+                responseData.put("id_token", idToken);
             }
             return ResponseModel.mapResponseModel(responseData);
         } catch (TokenIssuerException e) {
